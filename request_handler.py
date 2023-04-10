@@ -24,8 +24,8 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
     def do_GET(self):
-        self._set_headers(200)
         response = {}  # Default response
+        status_code = 200
 
         # Parse the URL and capture the tuple that is returned
         (resource, id) = self.parse_url(self.path)
@@ -34,12 +34,20 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_animal(id)
 
+                if response is None:
+                    status_code = 404
+                    response = {"message": "Animal not found"}
+
             else:
                 response = get_all_animals()
 
         if resource == "locations":
             if id is not None:
                 response = get_single_location(id)
+
+                if response is None:
+                    status_code = 404
+                    response = {"message": "Location not found"}
 
             else:
                 response = get_all_locations()
@@ -48,6 +56,10 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_employee(id)
 
+                if response is None:
+                    status_code = 404
+                    response = {"message": "Employee not found"}
+
             else:
                 response = get_all_employees()
 
@@ -55,10 +67,16 @@ class HandleRequests(BaseHTTPRequestHandler):
             if id is not None:
                 response = get_single_customer(id)
 
+                if response is None:
+                    status_code = 404
+                    response = {"message": "Customer not found"}
+
             else:
                 response = get_all_customers()
 
-            self.wfile.write(json.dumps(response).encode())
+        self._set_headers(status_code)
+        self.wfile.write(json.dumps(response).encode())
+
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.

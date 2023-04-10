@@ -1,3 +1,6 @@
+from .location_requests import get_single_location
+from .customer_requests import get_single_customer
+
 ANIMALS = [
     {
         "id": 1,
@@ -26,10 +29,6 @@ ANIMALS = [
 ]
 
 
-def get_all_animals():
-    return ANIMALS
-
-# Function with a single parameter
 def get_single_animal(id):
     # Variable to hold the found animal, if it exists
     requested_animal = None
@@ -42,7 +41,21 @@ def get_single_animal(id):
         if animal["id"] == id:
             requested_animal = animal
 
+    if requested_animal:
+        # Get the related location and customer
+        matching_location = get_single_location(requested_animal["locationId"])
+        matching_customer = get_single_customer(requested_animal["customerId"])
+
+        # Attach the related resources to the animal dictionary
+        requested_animal["location"] = matching_location
+        requested_animal["customer"] = matching_customer
+
+        # Delete the locationId and customerId keys from the animal dictionary
+        del requested_animal["locationId"]
+        del requested_animal["customerId"]
+
     return requested_animal
+
 
 def create_animal(animal):
     # Get the id value of the last animal in the list
