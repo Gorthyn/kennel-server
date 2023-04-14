@@ -2,6 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Server",
+            "type": "python",
+            "request": "launch",
+            "program": "./server.py",
+            "console": "integratedTerminal",
+            "autoReload": {
+                "enable": true
+            }
+        },
+        {
             "name": "Request Handler",
             "type": "python",
             "request": "launch",
